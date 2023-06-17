@@ -1,6 +1,7 @@
 package tickets
 
 import (
+	"math"
 	"time"
 
 	"gorm.io/gorm"
@@ -46,18 +47,19 @@ func (r repository) GetTicketCount() (res []TicketStatus, err error) {
 func (r repository) GetTicket(req ReqTicket) (res ResponseTicket, err error) {
 
 	var total int64
-	err = r.db.Model(&Ticket{}).Where("status = ? or ? = ''", req.Status, req.Status).Count(&total).Error
+	err = r.db.Model(&Ticket{}).Where("status = ? or (? = '' or ? = 'all')", req.Status, req.Status, req.Status).Count(&total).Error
 	if err != nil {
 		return
 	}
 
-	err = r.db.Where("status = ? or ? = ''", req.Status, req.Status).Order("id asc").Offset((req.Pagging.Size * (req.Pagging.Page - 1))).Limit(req.Pagging.Size).Find(&res.Data).Error
+	err = r.db.Where("status = ? or (? = '' or ? = 'all')", req.Status, req.Status, req.Status).Order("id asc").Offset((req.Pagging.Size * (req.Pagging.Page - 1))).Limit(req.Pagging.Size).Find(&res.Data).Error
 	if err != nil {
 		return
 	}
 
 	res.Pagging = req.Pagging
 	res.Pagging.Total = int(total)
+	res.Pagging.TotalPage = int(math.Ceil(float64(total) / float64(req.Pagging.Size)))
 	return
 }
 

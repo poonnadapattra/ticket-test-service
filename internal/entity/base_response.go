@@ -14,7 +14,8 @@ type BaseResponsePagging struct {
 }
 
 type Pagging struct {
-	Page  int `json:"page"`
-	Size  int `json:"size"`
-	Total int `json:"total"`
+	Page      int `json:"page"`
+	Size      int `json:"size"`
+	Total     int `json:"total"`
+	TotalPage int `json:"total_page"`
 }
