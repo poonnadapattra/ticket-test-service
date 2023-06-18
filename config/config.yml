@@ -1,9 +1,9 @@
 server:
   port: 8080
 database:
-  host: db-ticket.czmnok3zosxu.ap-southeast-1.rds.amazonaws.com
+  host: localhost
   port: 5432
   dbname: postgres
   username: postgres
-  password: 12148441
+  password: ""
   
