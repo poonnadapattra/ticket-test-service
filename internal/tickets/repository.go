@@ -4,13 +4,14 @@ import (
 	"math"
 	"time"
 
+	"github.com/poonnadapattra/ticket-test-service/internal/entity"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
 	GetTicketCount() (res []TicketStatus, err error)
 	GetTicket(req ReqTicket) (res ResponseTicket, err error)
-	CreateTicket(req Tickets) (err error)
+	CreateTicket(req entity.Tickets) (err error)
 	UpdateTicket(req Tickets) (err error)
 	DeleteTicket(req Tickets) (err error)
 }
@@ -65,7 +66,7 @@ func (r repository) GetTicket(req ReqTicket) (res ResponseTicket, err error) {
 	return
 }
 
-func (r repository) CreateTicket(req Tickets) (err error) {
+func (r repository) CreateTicket(req entity.Tickets) (err error) {
 	req.CreatedAt = time.Now()
 	req.UpdatedAt = time.Now()
 	req.Status = "pending"

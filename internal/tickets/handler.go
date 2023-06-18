@@ -70,7 +70,7 @@ func (h handler) GetTicket(c echo.Context) error {
 
 func (h handler) CreateTicket(c echo.Context) error {
 
-	var req Tickets
+	var req entity.Tickets
 	if err := c.Bind(&req); err != nil {
 		return err
 	}

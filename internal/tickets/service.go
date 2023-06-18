@@ -1,9 +1,11 @@
 package tickets
 
+import "github.com/poonnadapattra/ticket-test-service/internal/entity"
+
 type Service interface {
 	GetTicketCount() (res []TicketStatus, err error)
 	GetTicket(req ReqTicket) (res ResponseTicket, err error)
-	CreateTicket(req Tickets) (err error)
+	CreateTicket(req entity.Tickets) (err error)
 	UpdateTicket(req Tickets) (err error)
 	DeleteTicket(req Tickets) (err error)
 }
@@ -33,6 +35,6 @@ func (s service) DeleteTicket(req Tickets) (err error) {
 	return s.repository.DeleteTicket(req)
 }
 
-func (s service) CreateTicket(req Tickets) (err error) {
+func (s service) CreateTicket(req entity.Tickets) (err error) {
 	return s.repository.CreateTicket(req)
 }
