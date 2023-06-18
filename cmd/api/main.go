@@ -51,7 +51,7 @@ func main() {
 }
 
 func initConfig() (c config.Config) {
-	viper.SetConfigName("config")
+	viper.SetConfigName("config.dev")
 	viper.AddConfigPath("./config/")
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
