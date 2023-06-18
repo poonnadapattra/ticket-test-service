@@ -70,7 +70,7 @@ func (h handler) GetTicket(c echo.Context) error {
 
 func (h handler) CreateTicket(c echo.Context) error {
 
-	var req Ticket
+	var req Tickets
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
@@ -87,7 +87,7 @@ func (h handler) CreateTicket(c echo.Context) error {
 }
 
 func (h handler) UpdateTicket(c echo.Context) error {
-	var req Ticket
+	var req Tickets
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
@@ -104,7 +104,7 @@ func (h handler) UpdateTicket(c echo.Context) error {
 
 func (h handler) DeleteTicket(c echo.Context) error {
 
-	var req Ticket
+	var req Tickets
 	if err := c.Bind(&req); err != nil {
 		return err
 	}

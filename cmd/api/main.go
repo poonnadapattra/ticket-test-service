@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/poonnadapattra/ticket-test-service/internal/config"
+	"github.com/poonnadapattra/ticket-test-service/internal/contacts"
 	"github.com/poonnadapattra/ticket-test-service/internal/tickets"
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
@@ -22,6 +23,7 @@ func main() {
 	db := initDB(config)
 
 	ticketHandler := tickets.Newhandler(tickets.NewService(tickets.NewRepository(db)))
+	contactHandler := contacts.Newhandler(contacts.NewService(contacts.NewRepository(db)))
 
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -35,11 +37,13 @@ func main() {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	external.GET("/ticket/status", ticketHandler.GetTicketCount)
-	external.GET("/ticket", ticketHandler.GetTicket)
-	external.POST("/ticket", ticketHandler.CreateTicket)
-	external.PATCH("/ticket", ticketHandler.UpdateTicket)
-	external.DELETE("/ticket", ticketHandler.DeleteTicket)
+	external.GET("/tickets/status", ticketHandler.GetTicketCount)
+	external.GET("/tickets", ticketHandler.GetTicket)
+	external.POST("/tickets", ticketHandler.CreateTicket)
+	external.PATCH("/tickets", ticketHandler.UpdateTicket)
+	external.DELETE("/tickets", ticketHandler.DeleteTicket)
+
+	external.GET("/contacts", contactHandler.GetContact)
 
 	if err := e.Start(":8080"); err != nil {
 		log.Fatal("shutting down the server")

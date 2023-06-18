@@ -1,20 +1,21 @@
 package tickets
 
 import (
-	"time"
-
 	"github.com/poonnadapattra/ticket-test-service/internal/entity"
+	"gorm.io/gorm"
 )
 
-type Ticket struct {
-	ID          int        `json:"id"`
-	Title       string     `json:"title"`
-	Description string     `json:"description"`
-	Status      string     `json:"status"`
-	CreatedDate time.Time  `json:"created_date"`
-	UpdatedDate time.Time  `json:"updated_date"`
-	DeletedDate *time.Time `json:"deleted_date"`
+type Tickets struct {
+	gorm.Model
+
+	Title          string `json:"title"`
+	Description    string `json:"description"`
+	Status         string `json:"status"`
+	ContactID      int    `json:"contact_id"`
+	ContactName    string `json:"contact_name"`
+	ContactPhoneNo string `json:"contact_phone_no"`
 }
+
 type TicketStatus struct {
 	Status string `json:"status"`
 	Count  int    `json:"count"`
@@ -27,6 +28,6 @@ type ReqTicket struct {
 }
 
 type ResponseTicket struct {
-	Data    []Ticket       `json:"data"`
+	Data    []Tickets      `json:"data"`
 	Pagging entity.Pagging `json:"pagging"`
 }

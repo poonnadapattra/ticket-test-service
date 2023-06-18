@@ -10,9 +10,9 @@ import (
 type Repository interface {
 	GetTicketCount() (res []TicketStatus, err error)
 	GetTicket(req ReqTicket) (res ResponseTicket, err error)
-	CreateTicket(req Ticket) (err error)
-	UpdateTicket(req Ticket) (err error)
-	DeleteTicket(req Ticket) (err error)
+	CreateTicket(req Tickets) (err error)
+	UpdateTicket(req Tickets) (err error)
+	DeleteTicket(req Tickets) (err error)
 }
 
 type repository struct {
@@ -47,12 +47,14 @@ func (r repository) GetTicketCount() (res []TicketStatus, err error) {
 func (r repository) GetTicket(req ReqTicket) (res ResponseTicket, err error) {
 
 	var total int64
-	err = r.db.Model(&Ticket{}).Where("status = ? or (? = '' or ? = 'all')", req.Status, req.Status, req.Status).Count(&total).Error
+	err = r.db.Table("tickets").Where("status = ? or (? = '' or ? = 'all')", req.Status, req.Status, req.Status).Count(&total).Error
 	if err != nil {
 		return
 	}
 
-	err = r.db.Where("status = ? or (? = '' or ? = 'all')", req.Status, req.Status, req.Status).Order("id asc").Offset((req.Pagging.Size * (req.Pagging.Page - 1))).Limit(req.Pagging.Size).Find(&res.Data).Error
+	querySelect := `t.id, t.title, t.description, t.status, c.id contact_id, c.phone_no contact_phone_no, c.name contact_name, t.created_at, t.updated_at`
+	joinContact := `left join contacts c on t.contact_id = c.id`
+	err = r.db.Table("tickets t").Select(querySelect).Joins(joinContact).Where("t.status = ? or (? = '' or ? = 'all')", req.Status, req.Status, req.Status).Order("id asc").Offset((req.Pagging.Size * (req.Pagging.Page - 1))).Limit(req.Pagging.Size).Find(&res.Data).Error
 	if err != nil {
 		return
 	}
@@ -63,20 +65,28 @@ func (r repository) GetTicket(req ReqTicket) (res ResponseTicket, err error) {
 	return
 }
 
-func (r repository) CreateTicket(req Ticket) (err error) {
-	req.CreatedDate = time.Now()
-	req.UpdatedDate = time.Now()
+func (r repository) CreateTicket(req Tickets) (err error) {
+	req.CreatedAt = time.Now()
+	req.UpdatedAt = time.Now()
 	req.Status = "pending"
 	err = r.db.Create(&req).Error
 	return
 }
 
-func (r repository) UpdateTicket(req Ticket) (err error) {
-	err = r.db.Model(&Ticket{}).Where("id = ?", req.ID).Updates(Ticket{Status: req.Status, UpdatedDate: time.Now()}).Error
+func (r repository) UpdateTicket(req Tickets) (err error) {
+
+	data := Tickets{
+		Model: gorm.Model{
+			UpdatedAt: time.Now(),
+		},
+		Status: req.Status,
+	}
+
+	err = r.db.Model(&Tickets{}).Where("id = ?", req.ID).Updates(data).Error
 	return
 }
 
-func (r repository) DeleteTicket(req Ticket) (err error) {
+func (r repository) DeleteTicket(req Tickets) (err error) {
 	err = r.db.Delete(&req).Error
 	return
 }
