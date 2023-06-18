@@ -1,6 +1,7 @@
 package tickets
 
 import (
+	"fmt"
 	"math"
 	"time"
 
@@ -55,7 +56,8 @@ func (r repository) GetTicket(req ReqTicket) (res ResponseTicket, err error) {
 
 	querySelect := `t.id, t.title, t.description, t.status, c.id contact_id, c.phone_no contact_phone_no, c.name contact_name, t.created_at, t.updated_at`
 	joinContact := `left join contacts c on t.contact_id = c.id`
-	err = r.db.Table("tickets t").Select(querySelect).Joins(joinContact).Where("t.status = ? or (? = '' or ? = 'all')", req.Status, req.Status, req.Status).Order("id asc").Offset((req.Pagging.Size * (req.Pagging.Page - 1))).Limit(req.Pagging.Size).Find(&res.Data).Error
+	orderBy := fmt.Sprintf("%s %s", req.OrderBy, req.SortBy)
+	err = r.db.Table("tickets t").Select(querySelect).Joins(joinContact).Where("t.status = ? or (? = '' or ? = 'all')", req.Status, req.Status, req.Status).Order(orderBy).Offset((req.Pagging.Size * (req.Pagging.Page - 1))).Limit(req.Pagging.Size).Find(&res.Data).Error
 	if err != nil {
 		return
 	}

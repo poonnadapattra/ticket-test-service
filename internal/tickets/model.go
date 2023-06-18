@@ -22,7 +22,9 @@ type TicketStatus struct {
 }
 
 type ReqTicket struct {
-	Status string `json:"status"`
+	Status  string `json:"status"`
+	OrderBy string `json:"order_by"`
+	SortBy  string `json:"sort_by"`
 
 	Pagging entity.Pagging `json:"pagging"`
 }

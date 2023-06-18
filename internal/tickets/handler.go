@@ -51,8 +51,11 @@ func (h handler) GetTicket(c echo.Context) error {
 		size = 0
 		log.Error(err, "parsing: size params")
 	}
+
 	req := ReqTicket{}
 	req.Status = c.QueryParam("status")
+	req.OrderBy = c.QueryParam("order_by")
+	req.SortBy = c.QueryParam("sort_by")
 	req.Pagging.Page = page
 	req.Pagging.Size = size
 
